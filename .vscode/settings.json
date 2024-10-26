@@ -12,5 +12,6 @@
             "command": "package",
             "debug": false
         },
-    ]
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
