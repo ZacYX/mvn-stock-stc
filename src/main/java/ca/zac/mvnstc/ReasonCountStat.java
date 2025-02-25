@@ -26,10 +26,11 @@ class ReasonCountStat extends StatBase {
                     // Get 2 cells
                     cellWithCategory = currentRow.getCell(CATEGORY_INDEX);
                     cellWithStockList = currentRow.getCell(STOCK_LIST_INDEX);
-                    if (cellWithCategory != null) {
-                        if (cellWithStockList == null) {
-                            cellWithStockList = currentRow.createCell(STOCK_LIST_INDEX);
-                        }
+                    if (cellWithCategory == null) {
+                        continue;
+                    }
+                    if (cellWithStockList == null) {
+                        cellWithStockList = currentRow.createCell(STOCK_LIST_INDEX);
                     }
                     // Get content of the 2 cells
                     category = cellWithCategory.getStringCellValue().trim();
