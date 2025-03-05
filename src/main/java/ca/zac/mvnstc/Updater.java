@@ -68,7 +68,8 @@ class Updater {
             // Stop loop after getting all index
             if (this.nameColumnIndex != -1 && this.reasonColumnIndex != -1
                     && this.increaseRateColumnIndex != -1
-                    && this.increaseDatesColumnIndex != -1) {
+                    && this.increaseDatesColumnIndex != -1
+                    && this.detailedIndustryColumnIndex != -1) {
                 break;
             }
         }
