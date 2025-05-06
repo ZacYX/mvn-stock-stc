@@ -130,6 +130,7 @@ class Updater {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                System.out.println("Exception line: " + i + "  ");
                 continue;
             }
         }
