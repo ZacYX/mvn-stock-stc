@@ -23,6 +23,8 @@ public class ExcelOperator {
     Workbook updaterWorkbook;
     Workbook statisticResultWorkbook;
 
+    CellStyle cellStyle;
+
     Sheet updaterSheet;
     Sheet firstReasonSheet;
     Sheet allReasonSheet;
@@ -47,6 +49,10 @@ public class ExcelOperator {
             System.out.println("marketinfo file not found");
             statisticResultWorkbook = new XSSFWorkbook();
         }
+        cellStyle = statisticResultWorkbook.createCellStyle();
+        cellStyle.setAlignment(HorizontalAlignment.LEFT); // 水平居中
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER); // 垂直居中
+        cellStyle.setWrapText(true);
         try {
             Date date = new Date();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MMdd-hhmm");
@@ -94,47 +100,100 @@ public class ExcelOperator {
         }
     }
 
+    public FileInputStream getUpdaterFileInputStream() {
+        return this.updaterFileInputStream;
+    }
+
+    public void setUpdaterFileInputStream(FileInputStream updaterFileInputStream) {
+        this.updaterFileInputStream = updaterFileInputStream;
+    }
+
+    public FileInputStream getStatisticResultFileInputStream() {
+        return this.statisticResultFileInputStream;
+    }
+
+    public void setStatisticResultFileInputStream(FileInputStream statisticResultFileInputStream) {
+        this.statisticResultFileInputStream = statisticResultFileInputStream;
+    }
+
+    public FileOutputStream getNewStatisticResultFileOutputStream() {
+        return this.newStatisticResultFileOutputStream;
+    }
+
+    public void setNewStatisticResultFileOutputStream(FileOutputStream newStatisticResultFileOutputStream) {
+        this.newStatisticResultFileOutputStream = newStatisticResultFileOutputStream;
+    }
+
+    public Workbook getUpdaterWorkbook() {
+        return this.updaterWorkbook;
+    }
+
+    public void setUpdaterWorkbook(Workbook updaterWorkbook) {
+        this.updaterWorkbook = updaterWorkbook;
+    }
+
+    public Workbook getStatisticResultWorkbook() {
+        return this.statisticResultWorkbook;
+    }
+
+    public void setStatisticResultWorkbook(Workbook statisticResultWorkbook) {
+        this.statisticResultWorkbook = statisticResultWorkbook;
+    }
+
+    public CellStyle getCellStyle() {
+        return this.cellStyle;
+    }
+
+    public void setCellStyle(CellStyle cellStyle) {
+        this.cellStyle = cellStyle;
+    }
+
     public Sheet getUpdaterSheet() {
         return this.updaterSheet;
+    }
+
+    public void setUpdaterSheet(Sheet updaterSheet) {
+        this.updaterSheet = updaterSheet;
     }
 
     public Sheet getFirstReasonSheet() {
         return this.firstReasonSheet;
     }
 
+    public void setFirstReasonSheet(Sheet firstReasonSheet) {
+        this.firstReasonSheet = firstReasonSheet;
+    }
+
     public Sheet getAllReasonSheet() {
         return this.allReasonSheet;
+    }
+
+    public void setAllReasonSheet(Sheet allReasonSheet) {
+        this.allReasonSheet = allReasonSheet;
     }
 
     public Sheet getAllReasonCountSheet() {
         return this.allReasonCountSheet;
     }
 
+    public void setAllReasonCountSheet(Sheet allReasonCountSheet) {
+        this.allReasonCountSheet = allReasonCountSheet;
+    }
+
     public Sheet getDetailedIndustrySheet() {
         return this.detailedIndustrySheet;
+    }
+
+    public void setDetailedIndustrySheet(Sheet detailedIndustrySheet) {
+        this.detailedIndustrySheet = detailedIndustrySheet;
     }
 
     public Sheet getDetailedIndustryCountSheet() {
         return this.detailedIndustryCountSheet;
     }
 
-    // public Workbook getUpdaterWorkbook() {
-    // return this.updaterWorkbook;
-    // }
+    public void setDetailedIndustryCountSheet(Sheet detailedIndustryCountSheet) {
+        this.detailedIndustryCountSheet = detailedIndustryCountSheet;
+    }
 
-    // public Workbook getStatisticWorkbook() {
-    // return this.statisticResultWorkbook;
-    // }
-
-    // public FileInputStream getUpdaterFileInputStream() {
-    // return this.updaterFileInputStream;
-    // }
-
-    // public FileInputStream getStatisticResultFileInputStream() {
-    // return this.statisticResultFileInputStream;
-    // }
-
-    // public FileOutputStream getNewStatisticResultFileOutputSteam() {
-    // return this.newStatisticResultFileOutputStream;
-    // }
 }

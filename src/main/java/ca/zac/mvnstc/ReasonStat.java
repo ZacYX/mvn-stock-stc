@@ -6,9 +6,15 @@ package ca.zac.mvnstc;
 import java.util.ArrayList;
 
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 
 class ReasonStat extends StatBase {
+
+    public ReasonStat(ArrayList<StockInfo> stockInfoList, Sheet reasonSheet, Integer numberOfReasons,
+            CellStyle cellStyle) {
+        super(stockInfoList, reasonSheet, numberOfReasons, cellStyle);
+    }
 
     public ReasonStat(ArrayList<StockInfo> stockInfoList, Sheet reasonSheet, Integer numberOfReasons) {
         super(stockInfoList, reasonSheet, numberOfReasons);
@@ -49,7 +55,7 @@ class ReasonStat extends StatBase {
                     category = cellWithCategory.getStringCellValue().trim();
                     stockList = cellWithStockList.getStringCellValue();
                     // Compare reason in arraylist with category in reason statistic excel
-                    if (stockInfoList.get(i).getReason()[reasonIndex].equalsIgnoreCase(category)) {
+                    if (stockInfoList.get(i).getReason()[reasonIndex].contains(category)) {
                         // Write increase dates that is greater than 1 at the end of each stock name
                         if (stockInfoList.get(i).getIncreaseDates() > 1) {
                             stockList += stockInfoList.get(i).getName()
@@ -58,11 +64,15 @@ class ReasonStat extends StatBase {
                             stockList += stockInfoList.get(i).getName() + "\n";
                         }
                         cellWithStockList.setCellValue(stockList);
+                        // set cell format,
+                        cellWithStockList.setCellStyle(cellStyle);
                         // update number of second column
                         currentRow.getCell(SECOND_COLUMN)
                                 .setCellValue(currentRow.getCell(SECOND_COLUMN).getNumericCellValue() + 1);
-                        oldCategory = true;
-                        break; // Category found, do not need to find the rows left
+
+                        if (stockInfoList.get(i).getReason()[reasonIndex].equalsIgnoreCase(category)) {
+                            oldCategory = true;
+                        }
                     }
                 }
                 // New category, insert a new row

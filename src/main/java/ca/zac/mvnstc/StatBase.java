@@ -7,6 +7,8 @@ import java.util.Date;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.RichTextString;
 
 public class StatBase {
 
@@ -21,6 +23,7 @@ public class StatBase {
     Row currentRow;
     Cell cellWithCategory;
     Cell cellWithStockList;
+    CellStyle cellStyle;
     String category; // Reason in updater
     String stockList;
     Boolean oldCategory;
@@ -28,6 +31,14 @@ public class StatBase {
     Integer reasonIndex; // Concept reason index
     String sheetName;
     Integer numberOfReasons; // Many 10% increased stocks has more than one concept reason
+
+    public StatBase(ArrayList<StockInfo> stockInfoList, Sheet reasonSheet, Integer numberOfReasons,
+            CellStyle cellStyle) {
+        this.stockInfoList = stockInfoList;
+        this.reasonSheet = reasonSheet;
+        this.numberOfReasons = numberOfReasons;
+        this.cellStyle = cellStyle;
+    }
 
     public StatBase(ArrayList<StockInfo> stockInfoList, Sheet reasonSheet, Integer numberOfReasons) {
         this.stockInfoList = stockInfoList;
