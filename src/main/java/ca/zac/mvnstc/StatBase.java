@@ -8,7 +8,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.RichTextString;
 
 public class StatBase {
 
@@ -48,10 +47,10 @@ public class StatBase {
 
     public void process() {
         prepare();
-        for (int i = 0; i < numberOfReasons; i++) {
-            setReasonIndex(i);
-            insert();
-        }
+        // for (int i = 0; i < numberOfReasons; i++) {
+        // setReasonIndex(i);
+        insert();
+        // }
     }
 
     public void setReasonIndex(Integer reasonIndex) {

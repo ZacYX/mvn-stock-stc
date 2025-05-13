@@ -23,7 +23,8 @@ public class ZTMerger {
          Updater updater = new Updater(excelOperator.getUpdaterSheet());
          ArrayList<StockInfo> stockInfoList = updater.getData();
 
-         ReasonStat reasonStat = new ReasonStat(stockInfoList, excelOperator.getFirstReasonSheet(), 1,
+         ReasonStat reasonStat = new ReasonStat(stockInfoList,
+               excelOperator.getFirstReasonSheet(), 1,
                excelOperator.getCellStyle());
          reasonStat.process();
          ReasonStat allReasonStat = new ReasonStat(stockInfoList, excelOperator.getAllReasonSheet(), 4,

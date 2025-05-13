@@ -5,15 +5,25 @@
 package ca.zac.mvnstc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.apache.poi.ss.usermodel.*;
 
 class Updater {
     int nameColumnIndex;
-    int detailedIndustryColumnIndex;
-    int reasonColumnIndex;
-    int increaseRateColumnIndex;
-    int increaseDatesColumnIndex;
+    int detailedIndustryColumnIndex; // 细分行业
+    int reasonColumnIndex; // 涨停原因
+    int increaseRateColumnIndex; // 涨幅
+    int increaseDatesColumnIndex; // 连续涨停天数
+
+    int totalAmountIndex; // 总金额
+    int exchangeRateIndex; // 换手
+    int amountOn10PerIndex; // 涨停成交额
+    int sealBillAmountIndex; // 封单额
+    int firstTimeIndex; // 最终涨停时间
+    int openTimesIndex; // 涨停开板次数
+    int lastTimeIndex; // 首次涨停时间
+    int saleableShareIndex; // 流通市值
 
     Sheet updaterSheet;
     Row currentRow;
@@ -22,6 +32,15 @@ class Updater {
     Cell cellWithReason;
     Cell cellWithIncreaseRate;
     Cell cellWithIncreaseDates;
+
+    Cell cellWithTotalAmount;
+    Cell cellWithExchageRate;
+    Cell cellWithAmountOn10Per;
+    Cell cellWithSealBillAmount;
+    Cell cellWithFirstTime;
+    Cell cellWithLastTime;
+    Cell cellWithOpenTimes;
+    Cell cellWithSaleableShare;
 
     StockInfo stockInfo;
     ArrayList<StockInfo> stockInfoList;
@@ -33,11 +52,22 @@ class Updater {
         this.reasonColumnIndex = -1;
         this.increaseDatesColumnIndex = -1;
         this.increaseRateColumnIndex = -1;
+
+        this.totalAmountIndex = -1; // 总金额
+        this.exchangeRateIndex = -1; // 换手
+        this.amountOn10PerIndex = -1; // 涨停成交额
+        this.sealBillAmountIndex = -1; // 封单额
+        this.firstTimeIndex = -1; // 最终涨停时间
+        this.openTimesIndex = -1; // 涨停开板次数
+        this.lastTimeIndex = -1; // 首次涨停时间
+        this.saleableShareIndex = -1;
+
     }
 
     public ArrayList<StockInfo> getData() {
         this.prepare();
         this.process();
+        Collections.sort(this.stockInfoList);
         return this.stockInfoList;
     }
 
@@ -65,6 +95,31 @@ class Updater {
             if (cell.getStringCellValue().trim().contains(StockInfo.STOCK_INCREASE_DATES_HEADER)) {
                 this.increaseDatesColumnIndex = cell.getColumnIndex();
             }
+            // Added on May 12
+            if (cell.getStringCellValue().trim().contains(StockInfo.TOTAL_AMOUNT)) {
+                this.totalAmountIndex = cell.getColumnIndex();
+            }
+            if (cell.getStringCellValue().trim().equals(StockInfo.EXCHANGE_RATE)) {
+                this.exchangeRateIndex = cell.getColumnIndex();
+            }
+            if (cell.getStringCellValue().trim().contains(StockInfo.AMOUNT_ON_10PER)) {
+                this.amountOn10PerIndex = cell.getColumnIndex();
+            }
+            if (cell.getStringCellValue().trim().equals(StockInfo.SEAL_BILL_AMOUNT)) {
+                this.sealBillAmountIndex = cell.getColumnIndex();
+            }
+            if (cell.getStringCellValue().trim().contains(StockInfo.FIRST_TIME)) {
+                this.firstTimeIndex = cell.getColumnIndex();
+            }
+            if (cell.getStringCellValue().trim().contains(StockInfo.OPEN_TIMES)) {
+                this.openTimesIndex = cell.getColumnIndex();
+            }
+            if (cell.getStringCellValue().trim().contains(StockInfo.LAST_TIME)) {
+                this.lastTimeIndex = cell.getColumnIndex();
+            }
+            if (cell.getStringCellValue().trim().contains(StockInfo.SALEABLE_SHARE)) {
+                this.saleableShareIndex = cell.getColumnIndex();
+            }
             // Stop loop after getting all index
             if (this.nameColumnIndex != -1 && this.reasonColumnIndex != -1
                     && this.increaseRateColumnIndex != -1
@@ -74,10 +129,19 @@ class Updater {
             }
         }
         System.out.println("Index:  name, " + nameColumnIndex
+                + "    Exchange Rate, " + exchangeRateIndex
                 + "    Detailed_industry, " + detailedIndustryColumnIndex
                 + "    Reason, " + reasonColumnIndex
                 + "    Rate, " + increaseRateColumnIndex
+                + "    Saleable, " + saleableShareIndex
                 + "    dates, " + increaseDatesColumnIndex);
+        System.out.println(
+                "Total amount, " + totalAmountIndex
+                        + "    Amount on 10%, " + amountOn10PerIndex
+                        + "    Seal Bill, " + sealBillAmountIndex
+                        + "    First Time, " + firstTimeIndex
+                        + "    Open times, " + openTimesIndex
+                        + "    Last Time, " + lastTimeIndex);
     }
 
     // Get stock name, reason, increase rate, increase dates according row index
@@ -89,6 +153,15 @@ class Updater {
             this.cellWithReason = this.currentRow.getCell(reasonColumnIndex);
             this.cellWithIncreaseRate = this.currentRow.getCell(increaseRateColumnIndex);
             this.cellWithIncreaseDates = this.currentRow.getCell(increaseDatesColumnIndex);
+
+            this.cellWithTotalAmount = this.currentRow.getCell(totalAmountIndex);
+            this.cellWithExchageRate = this.currentRow.getCell(exchangeRateIndex);
+            this.cellWithAmountOn10Per = this.currentRow.getCell(amountOn10PerIndex);
+            this.cellWithSealBillAmount = this.currentRow.getCell(sealBillAmountIndex);
+            this.cellWithFirstTime = this.currentRow.getCell(firstTimeIndex);
+            this.cellWithOpenTimes = this.currentRow.getCell(openTimesIndex);
+            this.cellWithLastTime = this.currentRow.getCell(lastTimeIndex);
+            this.cellWithSaleableShare = this.currentRow.getCell(saleableShareIndex);
             // read cells' content
             try {
                 // Name
@@ -106,6 +179,36 @@ class Updater {
                 if (this.cellWithIncreaseDates.getCellType() == CellType.NUMERIC) {
                     this.stockInfo.setIncreaseDates(this.cellWithIncreaseDates.getNumericCellValue());
                 }
+
+                // Added on May 13
+                if (this.cellWithTotalAmount.getCellType() == CellType.NUMERIC) {
+                    // 金额单位：亿
+                    this.stockInfo.setTotalAmount(toYi(this.cellWithTotalAmount.getNumericCellValue()));
+                }
+                if (cellWithExchageRate.getCellType() == CellType.NUMERIC) {
+                    stockInfo.setExchangeRate(cellWithExchageRate.getNumericCellValue());
+                }
+                if (cellWithAmountOn10Per.getCellType() == CellType.STRING) {
+                    stockInfo.setAmountOn10Per(cellWithAmountOn10Per.getStringCellValue());
+                }
+                if (cellWithSealBillAmount.getCellType() == CellType.NUMERIC) {
+                    stockInfo.setSealBillAmount(toYi(cellWithSealBillAmount.getNumericCellValue()));
+                }
+                if (cellWithFirstTime.getCellType() == CellType.NUMERIC
+                        && DateUtil.isCellDateFormatted(cellWithFirstTime)) {
+                    stockInfo.setFirstTime((cellWithFirstTime.getDateCellValue()));
+                }
+                if (cellWithLastTime.getCellType() == CellType.NUMERIC
+                        && DateUtil.isCellDateFormatted(cellWithLastTime)) {
+                    stockInfo.setLastTime((cellWithLastTime.getDateCellValue()));
+                }
+                if (cellWithOpenTimes.getCellType() == CellType.NUMERIC) {
+                    stockInfo.setOpenTimes(Math.round(cellWithOpenTimes.getNumericCellValue()));
+                }
+                if (cellWithSaleableShare.getCellType() == CellType.NUMERIC) {
+                    stockInfo.setSaleableShare(toYi(cellWithSaleableShare.getNumericCellValue()));
+                }
+
                 // System.out.println("name, " + stockInfo.getName()
                 // + " Detailed_industry, " + stockInfo.getDetailedIndustry()
                 // + " Reason, " + stockInfo.getReason()[0]
@@ -137,4 +240,7 @@ class Updater {
         System.out.println("Total items: " + stockInfoList.size());
     }
 
+    Double toYi(Double num) {
+        return Math.round(num / 100000000 * 100.0) / 100.0;
+    }
 }

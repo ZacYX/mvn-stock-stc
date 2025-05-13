@@ -18,7 +18,8 @@ class ReasonCountStat extends StatBase {
     @Override
     void insert() {
         for (int i = 0; i < stockInfoList.size(); i++) {
-            if (reasonIndex < stockInfoList.get(i).getReason().length) {
+            // if (reasonIndex < stockInfoList.get(i).getReason().length) {
+            for (int reasonIndex = 0; reasonIndex < stockInfoList.get(i).getReason().length; reasonIndex++) {
                 oldCategory = false; // Assume it is a new item
                 // First row is header, iterate from the second row
                 for (int j = 1; j <= reasonSheet.getLastRowNum(); j++) {
